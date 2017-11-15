@@ -189,6 +189,7 @@ export default {
                 res = res.body
                 if (res.errno === 0) {
                     console.log(res.data)
+                    this._notify('注册成功')
                 }
                 // 成功后将按钮回复
                 this.$refs.registBtn.classList.remove('loading')
@@ -204,20 +205,19 @@ export default {
             var regNumber = /\d+/
             // 包含字母
             var regChar = /[a-zA-Z]+/
-            var res = true
             if (this.password.length < 6 || !regNumber.test(this.password) || !regChar.test(this.password)) {
                 this._notify('输入正确格式密码')
-                res = false
+                return
             }
             if (this.code.length < 4) {
                 this._notify('输入正确格式验证码')
-                res = false
+                return
             }
             if (!this.checkCellphone(this.phone_number)) {
                 this._notify('输入正确格式手机')
-                res = false
+                return
             }
-            return res
+            return true
         },
         // 弹出通知
         _notify(msg) {
@@ -267,6 +267,8 @@ export default {
 .regist>header h1 {
     color: #1ca2e2;
 }
+
+
 
 /* 表单样式  */
 
@@ -334,11 +336,15 @@ export default {
     border-left: 1px solid #ccc;
 }
 
+
+
 /* 获取验证码激活状态 */
 
 #form_code .active {
     color: #1ca2e2;
 }
+
+
 
 /* 注册按钮 */
 
@@ -358,6 +364,8 @@ export default {
     overflow: hidden;
 }
 
+
+
 /* 加载状态 */
 
 #form_registBtn.loading {
@@ -366,6 +374,8 @@ export default {
     color: black;
     animation: rotate 1.2s 0.2s infinite linear;
 }
+
+
 
 /* 按钮中的3/4 圆环  */
 
@@ -380,6 +390,8 @@ export default {
     border-bottom-color: black;
     transition: all .2s;
 }
+
+
 
 /* loading动画 旋转  */
 
