@@ -205,16 +205,16 @@ export default {
             var regNumber = /\d+/
             // 包含字母
             var regChar = /[a-zA-Z]+/
-            if (this.password.length < 6 || !regNumber.test(this.password) || !regChar.test(this.password)) {
-                this._notify('输入正确格式密码')
+            if (!this.checkCellphone(this.phone_number)) {
+                this._notify('输入正确格式手机号')
                 return
             }
             if (this.code.length < 4) {
                 this._notify('输入正确格式验证码')
                 return
             }
-            if (!this.checkCellphone(this.phone_number)) {
-                this._notify('输入正确格式手机')
+            if (this.password.length < 6 || !regNumber.test(this.password) || !regChar.test(this.password)) {
+                this._notify('输入正确格式密码')
                 return
             }
             return true
@@ -267,8 +267,6 @@ export default {
 .regist>header h1 {
     color: #1ca2e2;
 }
-
-
 
 /* 表单样式  */
 
@@ -336,15 +334,11 @@ export default {
     border-left: 1px solid #ccc;
 }
 
-
-
 /* 获取验证码激活状态 */
 
 #form_code .active {
     color: #1ca2e2;
 }
-
-
 
 /* 注册按钮 */
 
@@ -366,6 +360,7 @@ export default {
 
 
 
+
 /* 加载状态 */
 
 #form_registBtn.loading {
@@ -374,6 +369,7 @@ export default {
     color: black;
     animation: rotate 1.2s 0.2s infinite linear;
 }
+
 
 
 
@@ -390,6 +386,7 @@ export default {
     border-bottom-color: black;
     transition: all .2s;
 }
+
 
 
 
