@@ -8,11 +8,11 @@
         <div id="regist_form">
             <form action="">
                 <p id="form_phone">
-                    <span class="select">{{ phone_prefix }}
+                    <span class="select" @click="showPrefixList">{{ phone_prefix }}
                         <i class="fa fa-sort-desc" aria-hidden="true"></i>
                         </i>
                     </span>
-                    <input id='temp' type="text" placeholder="手机号" maxlength="11" v-model="phone_number" @keypress="filterNum" style="ime-mode:disabled;" onpaste="return false;">
+                    <input type="text" placeholder="手机号" maxlength="11" v-model="phone_number" @keypress="filterNum" style="ime-mode:disabled;" onpaste="return false;">
                 </p>
                 <p id="form_code">
                     <input type="number" placeholder="验证码" v-model="code">
@@ -26,10 +26,8 @@
                     <i></i>注册</button>
             </form>
         </div>
-        <transition>
-            <phone-list  :v-if="show_phone_list">
-            </phone-list>
-        </transition>
+        <phone-list :v-if="show_phone_list" ref="phone_list" @selectPrefix="changePhonePrefix">
+        </phone-list>
     </div>
 </template>
 
@@ -87,6 +85,22 @@ export default {
     },
     methods: {
         /**
+         * 调用子组件方法，显示手机前缀列表
+         */
+        showPrefixList() {
+            this.$refs.phone_list.showList()
+        },
+        /**
+         * @argument item 点击的phoneList的i节点
+         *  */
+        changePhonePrefix(item) {
+            // 文本内容
+            item = item.innerText
+            // 截取 +以后的内容 设置phone_prefix
+            // "阿根廷 +54"
+            this.phone_prefix = item.slice(item.lastIndexOf('+'))
+        },
+        /**
         * 验证手机号码
         * 暂只检测中国号码  +86 开头
         * 移动号码段:139、138、137、136、135、134、150、151、152、157、158、159、182、183、187、188、147
@@ -124,7 +138,7 @@ export default {
                 // 调用切换函数，禁止点击
                 this.toggleGetCode()
                 // 模拟一下短信
-                alert('123456')
+                this._notify('123456')
             }
         },
 
@@ -156,9 +170,11 @@ export default {
         registUser(event) {
             event.stopPropagation()
             event.preventDefault()
-            // if (!this._testVuleLegle()) {
-            //     return
-            // }
+            // 测试不通过 直接返回
+            if (!this._testVuleLegle()) {
+                return
+            }
+            // 将按钮变为loading样式，并禁止点击
             this.$refs.registBtn.classList.add('loading')
             this.$refs.registBtn.setAttribute('disabled', 'true')
             var data = {
@@ -167,46 +183,48 @@ export default {
                 password: this.password,
                 code: this.code
             }
+
             // 发送ajax请求
-            var xhr = new XMLHttpRequest()
-            xhr.timeout = 4000
-            xhr.onload = () => {
-                if (xhr.status === 200) {
-                    console.log(xhr.responseText)
-                } else {
-                    console.log(xhr.status)
+            this.$http.post(this.registApi, data).then((res) => {
+                res = res.body
+                if (res.errno === 0) {
+                    console.log(res.data)
                 }
+                // 成功后将按钮回复
                 this.$refs.registBtn.classList.remove('loading')
                 this.$refs.registBtn.removeAttribute('disabled')
-            }
-            xhr.ontimeout = () => {
-                this.$refs.registBtn.classList.remove('loading')
-                this.$refs.registBtn.removeAttribute('disabled')
-            }
-            xhr.open('POST', this.registApi, true)
-            xhr.send(data)
+            })
         },
 
         /**
          * 检测函数，检测输入
          */
         _testVuleLegle() {
+            // 包含数字
             var regNumber = /\d+/
+            // 包含字母
             var regChar = /[a-zA-Z]+/
             var res = true
             if (this.password.length < 6 || !regNumber.test(this.password) || !regChar.test(this.password)) {
-                alert('输入正确格式密码')
+                this._notify('输入正确格式密码')
                 res = false
             }
             if (this.code.length < 4) {
-                alert('输入正确格式验证码')
+                this._notify('输入正确格式验证码')
                 res = false
             }
             if (!this.checkCellphone(this.phone_number)) {
-                alert('输入正确格式手机')
+                this._notify('输入正确格式手机')
                 res = false
             }
             return res
+        },
+        // 弹出通知
+        _notify(msg) {
+            this.$notify.info({
+                message: msg,
+                position: 'top-right'
+            })
         }
     }
 }
@@ -316,9 +334,13 @@ export default {
     border-left: 1px solid #ccc;
 }
 
+/* 获取验证码激活状态 */
+
 #form_code .active {
     color: #1ca2e2;
 }
+
+/* 注册按钮 */
 
 #form_registBtn {
     display: block;
@@ -336,12 +358,16 @@ export default {
     overflow: hidden;
 }
 
+/* 加载状态 */
+
 #form_registBtn.loading {
     width: 40px;
     border-radius: 50%;
     color: black;
     animation: rotate 1.2s 0.2s infinite linear;
 }
+
+/* 按钮中的3/4 圆环  */
 
 #form_registBtn.loading i {
     display: inline-block;
@@ -354,6 +380,8 @@ export default {
     border-bottom-color: black;
     transition: all .2s;
 }
+
+/* loading动画 旋转  */
 
 @keyframes rotate {
     0% {

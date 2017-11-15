@@ -18,4 +18,30 @@ npm run build
 npm run build --report
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+```参数传递
+
+// 注册api 必选
+
+        registApi: {
+            type: String,
+            required: true
+        },
+
+// 自定义提示 可选
+// 默认 '60s后重试'
+
+        msg: {
+            type: String,
+            default: '60s后重试'
+        },
+
+// 验证码重发 倒数时间 可选
+// 默认60s
+
+        seconds: {
+            type: Number,
+            default: 60
+        }
+
+#若修改倒数时间，建议一并修改自定义提示
+```
