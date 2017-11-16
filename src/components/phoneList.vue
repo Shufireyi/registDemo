@@ -5,6 +5,12 @@
                 <i class="fa fa-chevron-left" aria-hidden="true" @click="hideList"></i>
                 <h3>选择国家和地区</h3>
             </header>
+            <div id="search_area">
+                <!-- <p> -->
+                <!-- <i class="fa fa-search" aria-hidden="true"></i> -->
+                <input type="text" placeholder="输入国家名称搜索" v-model="nation_name">
+                <!-- </p> -->
+            </div>
             <div id="phone_list_wrapper" ref="prefixList">
                 <ul id="phone_list_content" @click="selectItem">
                     <li v-for="(item , index) in prefixList" :key="index">{{ item.countryName }}
@@ -25,7 +31,19 @@ export default {
             // 前缀数组
             prefixList: [],
             // 是否显示
-            showFlag: false
+            showFlag: false,
+            // 搜索国家名
+            nation_name: ''
+        }
+    },
+    watch: {
+        // 筛选国家名包括nation_name的国家
+        nation_name() {
+            this.prefixList = prefixArray.filter((item, index) => {
+                if (item.countryName.search(this.nation_name) >= 0) {
+                    return true
+                }
+            })
         }
     },
     methods: {
@@ -81,12 +99,20 @@ export default {
 }
 
 
+
+
+
+
 /* 简单左移动画 */
 
 .moveIn-enter,
 .moveIn-leave-active {
     left: 100%;
 }
+
+
+
+
 
 
 /* 头部样式 */
@@ -117,11 +143,48 @@ header h3 {
 
 
 
+/* 搜索框 */
+
+#search_area {
+    box-sizing: border-box;
+    height: 50px;
+    width: 100%;
+    padding-top: 7px;
+    background-color: #eee;
+    text-align: center;
+}
+
+#search_area input {
+    display: block;
+    box-sizing: border-box;
+    height: 36px;
+    width: 80%;
+    margin: 0 auto;
+    line-height: 40px;
+    border-radius: 18px;
+    text-align: center;
+    outline: none;
+    border: 1px solid white;
+}
+
+
+/* 获得焦点时placeholder隐藏 */
+
+#search_area input:focus::placeholder {
+    color: white;
+}
+
+#search_area input:focus {
+    border: 1px solid lightblue;
+}
+
+
+
 /* 列表样式 */
 
 #phone_list_wrapper {
     position: absolute;
-    top: 50px;
+    top: 100px;
     left: 0;
     width: 100%;
     bottom: 0;
