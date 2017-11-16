@@ -18,7 +18,8 @@ npm run build
 npm run build --report
 ```
 
-```参数传递
+```
+参数传递
 
 // 注册api 必选
 
