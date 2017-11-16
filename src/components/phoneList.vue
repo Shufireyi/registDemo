@@ -53,6 +53,7 @@ export default {
         // 父组件调用，显示prefixList
         showList() {
             this.showFlag = true
+            this.nation_name = ''
             // 在dom更新完成后，计算list高度
             // 新建或更新BScroll
             this.$nextTick(() => {
