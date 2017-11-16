@@ -44,6 +44,9 @@ export default {
                     return true
                 }
             })
+            this.$nextTick(() => {
+                this.scroll.refresh()
+            })
         }
     },
     methods: {
@@ -98,22 +101,12 @@ export default {
     transition: all .4s
 }
 
-
-
-
-
-
 /* 简单左移动画 */
 
 .moveIn-enter,
 .moveIn-leave-active {
     left: 100%;
 }
-
-
-
-
-
 
 /* 头部样式 */
 
@@ -141,8 +134,6 @@ header h3 {
 }
 
 
-
-
 /* 搜索框 */
 
 #search_area {
@@ -167,7 +158,6 @@ header h3 {
     border: 1px solid white;
 }
 
-
 /* 获得焦点时placeholder隐藏 */
 
 #search_area input:focus::placeholder {
@@ -177,8 +167,6 @@ header h3 {
 #search_area input:focus {
     border: 1px solid lightblue;
 }
-
-
 
 /* 列表样式 */
 
